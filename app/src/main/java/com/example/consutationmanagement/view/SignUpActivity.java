@@ -9,14 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.consutationmanagement.R;
-import com.example.consutationmanagement.controller.PatientDatabase;
-import com.example.consutationmanagement.model.Patient;
 
 public class SignUpActivity extends AppCompatActivity  {
 
     private EditText editTextEmail, editTextPassword,editTextFirstName,editTextLastName,editTextAge;
     private Button buttonInscription;
-    PatientDatabase db = new PatientDatabase(this);
 
 
 
@@ -25,6 +22,8 @@ public class SignUpActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         init();
+
+        /*
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,12 +52,12 @@ public class SignUpActivity extends AppCompatActivity  {
 
 
                 // Retourner à la page MainActivity
-                /*
+
                 Intent intent = new Intent(inscriptionActivity.this, MainActivity.class);
-                startActivity(intent);*/
+                startActivity(intent);
 
             }
-        });
+        }); */
 
     }
     void init(){

@@ -48,6 +48,7 @@
         android:text="@string/log_in"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:onClick="onClick"
 
         android:textStyle="bold" />
 

@@ -1,4 +1,4 @@
-package com.example.consutationmanagement.controller;
+package com.example.serveur2;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.consutationmanagement.model.Patient;
+//import com.example.consutationmanagement.model.Patient;
 
 public class PatientDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "patient.db";
@@ -42,7 +42,7 @@ public class PatientDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Code pour gérer la mise à jour de la base de données si nécessaire
-    }
+    }/*
     public boolean insertPatient(Patient patient) {
         SQLiteDatabase db = this.getWritableDatabase();
         //if (!this.checkUserByEmail(patient.getEmail())) {
@@ -59,20 +59,15 @@ public class PatientDatabase extends SQLiteOpenHelper {
         //return false;
 
 
-    }
-    public boolean checkUserByEmail(String email) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String[] columns = { COLUMN_ID };
-        String selection = COLUMN_EMAIL + " = ?";
-        String[] selectionArgs = { email };
-        String limit = "1";
-
-        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null, limit);
-        boolean exists = (cursor.getCount() > 0);
-        cursor.close();
-        db.close();
-        return exists;
+    }*/
+    public boolean checkUser(String Email, String password) {
+        String[] columns = {COLUMN_ID};
+        SQLiteDatabase db = getReadableDatabase();
+        String selection = COLUMN_EMAIL + " = ?" + " AND " + COLUMN_PASSWORD + " = ?";
+        String[] selectionArgs = {Email, password};
+        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+        int count = cursor.getCount();
+        return count > 0;
     }
 }
 

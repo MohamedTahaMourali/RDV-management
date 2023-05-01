@@ -1,4 +1,4 @@
-package com.example.consutationmanagement.controller;
+package com.example.serveur2;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -73,11 +73,8 @@ public class RdvDataBase extends SQLiteOpenHelper {
         return lastTime;
     }
 
-
-
-
-
-
-
-
+    public boolean addRdv(String nomPatient, String dateRdv, String heureRdv) {
+    return false ;
+    }
 }
+

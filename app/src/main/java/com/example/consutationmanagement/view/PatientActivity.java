@@ -2,20 +2,13 @@ package com.example.consutationmanagement.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.database.Cursor;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.example.consutationmanagement.R;
-import com.example.consutationmanagement.controller.DataBaseDoctor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PatientActivity extends AppCompatActivity {
     EditText editTextFirstName,editTextLastName,editTextAge,editTextPhone,editTextDesc;
