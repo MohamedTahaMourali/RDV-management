@@ -1,130 +1,80 @@
 package com.example.consutationmanagement.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.consutationmanagement.R;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-
-public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
-    EditText editTextEmail, editTextPassword;
-    Button buttonLogin, buttonCreateAccount;
+public class LogInActivity extends AppCompatActivity {
+    private EditText emailEditText;
+    private EditText passwordEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-        init();
-        ecouteClick();
-    }
 
-    private void init() {
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
-    }
+        emailEditText = findViewById(R.id.editTextEmail);
+        passwordEditText = findViewById(R.id.editTextPassword);
 
-    private void ecouteClick() {
-        buttonLogin.setOnClickListener((View.OnClickListener) this);
-        buttonCreateAccount.setOnClickListener((View.OnClickListener) this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonLogin:
-                new ConnexionTask().execute();
-                break;
-            case R.id.buttonCreateAccount:
-                navigateToActivity(SignUpActivity.class);
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    private void navigateToActivity(Class nextActivity) {
-        Intent intent = new Intent(LogInActivity.this, nextActivity);
-        startActivity(intent);
-        finish();
-    }
-
-    boolean verifConx() {
-        // Création de la connexion au serveur
-        Socket socket = null;
-        try {
-            socket = new Socket("10.0.2.15", 8080);
-        } catch (IOException e) {
-            System.out.println("erreur connexion : " + e.getMessage());
-        }
-        InputStream inputStream = null;
-
-        // Obtention des flux d'entrée et de sortie pour communiquer avec le serveur
-        OutputStream outputStream = null;
-        try {
-            outputStream = socket.getOutputStream();
-            inputStream = socket.getInputStream();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        // Création d'un objet de type DataOutputStream pour envoyer les données d'accès au serveur
-        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-
-        // Envoi des données d'accès au serveur sous forme de chaîne de caractères
-        String email = editTextEmail.getText().toString();
-        String motDePasse = editTextPassword.getText().toString();
-        String message = "CONNEXION\n" + email + "\n" + motDePasse;
-        try {
-            dataOutputStream.writeUTF(message);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Lecture de la réponse du serveur
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
-        String reponse = null;
-        try {
-            reponse = dataInputStream.readUTF();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Traitement de la réponse du serveur
-        return (reponse.equals("OK"));
-    }
-
-    private class ConnexionTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            // Connectez-vous au serveur ici
-            return verifConx();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                navigateToActivity(PatientActivity.class);
-            } else {
-                Toast.makeText(LogInActivity.this, "Login failed, please try again", Toast.LENGTH_SHORT).show();
+        Button loginButton = findViewById(R.id.buttonLogin);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                User user = new User(email, password);
+                sendUserToServer(user);
             }
-        }
+        });
+    }
+
+    private void sendUserToServer(User user) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket("10.0.2.15", 8080);
+                    System.out.println("connected");
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                    objectOutputStream.writeObject(user);
+                    System.out.println("data sended");
+
+                    ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+                    String response = (String) objectInputStream.readObject();
+                    System.out.println("reply received");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response.equals("OK")) {
+                                Intent intent = new Intent(LogInActivity.this, PatientActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(LogInActivity.this, "Error: Invalid email or password", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    objectInputStream.close();
+                    objectOutputStream.close();
+                    socket.close();
+
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

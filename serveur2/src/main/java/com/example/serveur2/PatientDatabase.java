@@ -14,19 +14,20 @@ public class PatientDatabase extends SQLiteOpenHelper {
     private static final  String TABLE_NAME = "Patient"  ;
     private static final String COLUMN_EMAIL = "email";
 
-    private static String COLUMN_ID = "ID";
+
     private static String COLUMN_PASSWORD = "Password";
     private static String COLUMN_FIRST_NAME = "First Name";
     private static String COLUMN_LAST_NAME = "Last Name";
     private static String COLUMN_AGE="Age ";
+    private static final String COLUMN_ID ="id" ;
     private static final String SQL_CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_FIRST_NAME + "TEXT," +
-                    COLUMN_LAST_NAME + "TEXT," +
-                    COLUMN_EMAIL + "TEXT, " +
-                    COLUMN_PASSWORD + "TEXT, " +
-                    COLUMN_AGE + "TEXT)";
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_FIRST_NAME + "TEXT, " +
+                    COLUMN_LAST_NAME + "TEXT, " +
+                    COLUMN_EMAIL + " TEXT, " +
+                    COLUMN_PASSWORD + " TEXT, " +
+                    COLUMN_AGE + " TEXT)";
 
 
     public PatientDatabase(Context context) {
