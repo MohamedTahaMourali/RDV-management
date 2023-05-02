@@ -64,9 +64,7 @@ public class SignUpActivity extends AppCompatActivity  {
                 try {
                     socket = new Socket("10.0.2.15", 8080);
                     System.out.println("connected");
-                    Intent it = getIntent();
-                    String emailUser = it.getStringExtra("email");
-                    String data = "Rendez-vous : "+emailUser+" "+ user.toString();
+                    String data = user.toString();
                     sendMessage(socket ,data);
 
 

@@ -68,7 +68,9 @@ public class PatientActivity extends AppCompatActivity {
                 try {
                     socket = new Socket("10.0.2.15", 8080);
                     System.out.println("connected");
-                    String data = rdv.toString();
+                    Intent it = getIntent();
+                    String emailUser = it.getStringExtra("email");
+                    String data = "Rendez-vous : "+emailUser+" "+ rdv.toString();
                     sendMessage(socket ,data);
 
 
@@ -80,10 +82,10 @@ public class PatientActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (response.equals("Ajout Validé")) {
-                                navigateToActivity(PatientActivity.class);
+                            if (response.equals("Rendez-vous Validé ")) {
+                                navigateToActivity(RDVAcceptActivity.class);
                             } else {
-                                Toast.makeText(PatientActivity.this, "Impossible de créer le compte", Toast.LENGTH_SHORT).show();
+                                navigateToActivity(RDVRefusActivity.class);
                             }
                         }
                     });

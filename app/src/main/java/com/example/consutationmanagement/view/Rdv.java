@@ -1,5 +1,7 @@
 package com.example.consutationmanagement.view;
 
+import androidx.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,5 +15,9 @@ public class Rdv {
         this.time = time;
     }
 
-
+    @NonNull
+    @Override
+    public String toString() {
+        return numTel+" "+desc+" "+date+" "+time;
+    }
 }

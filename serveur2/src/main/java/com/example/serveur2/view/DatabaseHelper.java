@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.security.AccessControlContext;
+
 //import com.example.consutationmanagement.model.Patient;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -66,5 +68,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return count > 0;
     }
+    public int getId(String email){
+        String [] columns ={COLUMN_ID};
+        SQLiteDatabase db = getReadableDatabase();
+        String selection = COLUMN_EMAIL + " = ?" ;
+        String[] selectionArgs = {email};
+        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+            cursor.close();
+            return id;
+        } else {
+            cursor.close();
+            return -1;
+        }
+    }
+
 }
+
 
