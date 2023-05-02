@@ -11,40 +11,56 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.consutationmanagement.R;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText emailEditText;
     private EditText passwordEditText;
+    Button loginButton,signUpButton;
 
+    void init(){
+        emailEditText = findViewById(R.id.editTextEmail);
+        passwordEditText = findViewById(R.id.editTextPassword);
+        signUpButton = findViewById(R.id.buttonCreateAccount);
+        loginButton = findViewById(R.id.buttonLogin);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+        init();
+        ecoutClick();
 
-        emailEditText = findViewById(R.id.editTextEmail);
-        passwordEditText = findViewById(R.id.editTextPassword);
+    }
+    void ecoutClick(){
+        loginButton.setOnClickListener(this);
+        signUpButton.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.buttonCreateAccount:
+                navigateToActivity(SignUpActivity.class);
+                break;
+            case R.id.buttonLogin:
+                sendUserToServer(emailEditText.getText().toString(),passwordEditText.getText().toString());
+                break;
+            default:break;
+        }
 
-        Button loginButton = findViewById(R.id.buttonLogin);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-                User user = new User(email, password);
-                sendUserToServer(user);
-            }
-        });
+    }
+    private void navigateToActivity(Class nextActivity) {
+        Intent intent = new Intent(LogInActivity.this, nextActivity);
+        startActivity(intent);
+        finish();
     }
 
-    private void sendUserToServer(User user) {
+
+    private void sendUserToServer(String email,String password) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -52,7 +68,8 @@ public class LogInActivity extends AppCompatActivity {
                     Socket socket = new Socket("10.0.2.15", 8080);
                     System.out.println("connected");
                     OutputStream outputStream = socket.getOutputStream();
-                    outputStream.write(user.toString().getBytes());
+                    String data = email+" "+password;
+                    outputStream.write(data.getBytes());
 
                     System.out.println("data sended");
 
@@ -69,8 +86,7 @@ public class LogInActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (response.equals("OK")) {
-                                Intent intent = new Intent(LogInActivity.this, PatientActivity.class);
-                                startActivity(intent);
+                                navigateToActivity(PatientActivity.class);
                             } else {
                                 Toast.makeText(LogInActivity.this, "Error: Invalid email or password", Toast.LENGTH_SHORT).show();
                             }
@@ -87,4 +103,6 @@ public class LogInActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
 }

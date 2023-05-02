@@ -22,43 +22,12 @@ public class SignUpActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         init();
-
-        /*
         buttonInscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Récupérer l'adresse email et le mot de passe
-                String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
-                String firstname= editTextFirstName.getText().toString();
-                String lastname= editTextLastName.getText().toString();
-                String age = editTextAge.getText().toString();
-
-
-
-                // Ajouter l'utilisateur dans la base de données
-                if (!email.isEmpty() && !password.isEmpty() && !firstname.isEmpty() && !lastname.isEmpty() && !age.isEmpty()){
-                db.insertPatient(new Patient(firstname,lastname,Integer.parseInt(age),email,password));
-                    Intent intent1 = new Intent(SignUpActivity.this, PatientActivity.class);
-                    intent1.putExtra("nom_utilisateur", firstname);
-                    intent1.putExtra("prenom_utilisateur", lastname);
-                    startActivity(intent1);
-                }
-                // Enregistrer les informations de l'utilisateur dans la base de données
-// ...
-
-                // Définir les valeurs de nom et prénom dans l'Intent
-
-
-
-                // Retourner à la page MainActivity
-
-                Intent intent = new Intent(inscriptionActivity.this, MainActivity.class);
-                startActivity(intent);
 
             }
-        }); */
-
+        });
     }
     void init(){
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -68,5 +37,12 @@ public class SignUpActivity extends AppCompatActivity  {
         editTextAge = findViewById(R.id.edit_text_age);
         buttonInscription = findViewById(R.id.button_create_account);
     }
+    private void navigateToActivity(Class nextActivity) {
+        Intent intent = new Intent(SignUpActivity.this, nextActivity);
+        startActivity(intent);
+        finish();
+    }
+
+
 
 }
