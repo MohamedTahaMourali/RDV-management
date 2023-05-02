@@ -1,4 +1,4 @@
-package com.example.serveur2;
+package com.example.serveur2.view;
 
 import android.content.ContentValues;
 import android.content.Context;

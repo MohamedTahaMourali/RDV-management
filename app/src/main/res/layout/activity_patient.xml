@@ -19,40 +19,6 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/editTextFirstName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/black"
-        android:hint="@string/first_name"
-        android:maxLines="1"
-        android:padding="12dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black" />
-    <EditText
-        android:id="@+id/editTextLastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/black"
-        android:hint="@string/last_name"
-        android:maxLines="1"
-        android:padding="12dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"/>
-    <EditText
-        android:id="@+id/editTextAge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/black"
-        android:hint="@string/age"
-        android:maxLines="1"
-        android:padding="12dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"/>
-
-    <EditText
         android:id="@+id/editTextPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

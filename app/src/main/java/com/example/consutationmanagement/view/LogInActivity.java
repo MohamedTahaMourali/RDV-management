@@ -58,6 +58,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     }
     private void navigateToActivity(Class nextActivity) {
         Intent intent = new Intent(LogInActivity.this, nextActivity);
+        intent.putExtra("email",emailEditText.getText().toString());
         startActivity(intent);
         finish();
     }

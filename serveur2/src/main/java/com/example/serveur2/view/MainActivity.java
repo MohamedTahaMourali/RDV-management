@@ -1,16 +1,18 @@
-package com.example.serveur2;
+package com.example.serveur2.view;
 
 import android.os.Bundle;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import com.example.serveur2.R;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     private ServerSocket serverSocket;
@@ -20,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private int serverPort = 8080;
     private InputStream inputStream = null;
     private OutputStream outputStream =null ;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
