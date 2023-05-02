@@ -21,6 +21,9 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     private EditText emailEditText;
     private EditText passwordEditText;
     Button loginButton,signUpButton;
+    private OutputStream outputStream = null;
+    private InputStream inputStream = null;
+    private Socket socket = null;
 
     void init(){
         emailEditText = findViewById(R.id.editTextEmail);
@@ -65,23 +68,17 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket("10.0.2.15", 8080);
+                     socket = new Socket("10.0.2.15", 8080);
                     System.out.println("connected");
-                    OutputStream outputStream = socket.getOutputStream();
                     String data = email+" "+password;
-                    outputStream.write(data.getBytes());
+                    sendMessage(socket ,data);
+
+
 
                     System.out.println("data sended");
 
-                    InputStream inputStream = socket.getInputStream();
 
-                    // lire les données envoyées par le client
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = inputStream.read(buffer);
-                    System.out.println(bytesRead);
-                    String response = new String(buffer, 0, bytesRead);
-
-
+                    String response =receiveMessage(socket);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -93,15 +90,46 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
 
-                    inputStream.close();
-                    outputStream.close();
-                    socket.close();
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+    private void sendMessage(Socket socket,String data ){
+
+        try {
+            outputStream = socket.getOutputStream();
+            outputStream.write(data.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    private String receiveMessage (Socket socket){
+
+        try {
+            inputStream = socket.getInputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead = inputStream.read(buffer);
+            System.out.println(bytesRead);
+            String response = new String(buffer, 0, bytesRead);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void close (){
+        try {
+            inputStream.close();
+            outputStream.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 
