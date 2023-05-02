@@ -11,9 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.consutationmanagement.R;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class LogInActivity extends AppCompatActivity {
@@ -47,13 +51,19 @@ public class LogInActivity extends AppCompatActivity {
                 try {
                     Socket socket = new Socket("10.0.2.15", 8080);
                     System.out.println("connected");
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                    objectOutputStream.writeObject(user);
+                    OutputStream outputStream = socket.getOutputStream();
+                    outputStream.write(user.toString().getBytes());
+
                     System.out.println("data sended");
 
-                    ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-                    String response = (String) objectInputStream.readObject();
-                    System.out.println("reply received");
+                    InputStream inputStream = socket.getInputStream();
+
+                    // lire les données envoyées par le client
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = inputStream.read(buffer);
+                    System.out.println(bytesRead);
+                    String response = new String(buffer, 0, bytesRead);
+
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -67,11 +77,11 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     });
 
-                    objectInputStream.close();
-                    objectOutputStream.close();
+                    inputStream.close();
+                    outputStream.close();
                     socket.close();
 
-                } catch (IOException | ClassNotFoundException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
