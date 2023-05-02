@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     private ServerSocket serverSocket;
@@ -44,22 +45,17 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(message);
 
                         //séparation du email et mot de passe
-                        String[] loginInfo = message.split(" ");
-                        String email = loginInfo[0];
-                        String password = loginInfo[1];
-
-                        // Vérifier l'existence de l'utilisateur dans la base de données
-                        boolean userExists = patientDatabase.checkUser(email, password);
-
-                        // Initialiser le flux d'écriture
-                        // Envoyer une réponse au client
-                        String reponse ;
-                        if (userExists) {
-                            reponse = "OK";
-                        } else {
-                            reponse = "ERROR";
+                        String[] messageRecu = message.split(" ");
+                        String reponse="" ;
+                        if (messageRecu.length == 2){
+                            reponse = verifUser(messageRecu[0],messageRecu[1]);
+                        }
+                        else{
+                            reponse = addUser(messageRecu[2],messageRecu[3],messageRecu[4],messageRecu[0],messageRecu[1]);
                         }
                         sendMessage(clientSocket,reponse);
+                        // Vérifier l'existence de l'utilisateur dans la base de données
+
                         // Fermer les connexions
                         close();
 
@@ -75,6 +71,26 @@ public class MainActivity extends AppCompatActivity {
 
         serverThread.start();
     }
+    String verifUser(String email,String password){
+        boolean userExists = patientDatabase.checkUser(email, password);
+
+        // Initialiser le flux d'écriture
+        // Envoyer une réponse au client
+        String reponse ;
+        if (userExists) {
+            reponse = "utiliateur existant";
+        } else {
+            reponse = "untilisateur n'existe pas dans la base ";
+        }
+        return reponse;
+    }
+    String addUser(String nom,String prenom,String age , String email, String password){
+        if(patientDatabase.addUser(nom,prenom,age,email,password))
+            return "Ajout Validé";
+        return "ajout invalide";
+
+    }
+
 
     private String getClientMessage(Socket clientSocket) {
         // Initialiser le flux de lecture

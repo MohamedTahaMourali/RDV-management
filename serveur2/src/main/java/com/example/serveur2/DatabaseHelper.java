@@ -1,5 +1,6 @@
 package com.example.serveur2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -42,24 +43,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Code pour gérer la mise à jour de la base de données si nécessaire
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
-    }/*
-    public boolean insertPatient(Patient patient) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        //if (!this.checkUserByEmail(patient.getEmail())) {
+    }
+    public boolean addUser(String firstName, String lastName, String email, String password, String age) {
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_FIRST_NAME, patient.getFirstName());
-        values.put(COLUMN_LAST_NAME, patient.getLastName());
-        values.put(COLUMN_AGE, patient.getAge());
-        values.put(COLUMN_EMAIL, patient.getEmail());
-        values.put(COLUMN_PASSWORD, patient.getMdp());
+        values.put(COLUMN_FIRST_NAME, firstName);
+        values.put(COLUMN_LAST_NAME, lastName);
+        values.put(COLUMN_EMAIL, email);
+        values.put(COLUMN_PASSWORD, password);
+        values.put(COLUMN_AGE, age);
         long result = db.insert(TABLE_NAME, null, values);
-        db.close();
-        return (result==-1);
-        //}
-        //return false;
+        return result != -1;
+    }
 
-
-    }*/
     public boolean checkUser(String email, String password) {
         String[] columns = {COLUMN_ID};
         SQLiteDatabase db = getReadableDatabase();

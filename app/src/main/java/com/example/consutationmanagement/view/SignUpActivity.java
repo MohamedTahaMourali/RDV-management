@@ -20,7 +20,9 @@ public class SignUpActivity extends AppCompatActivity  {
 
     private EditText editTextEmail, editTextPassword,editTextFirstName,editTextLastName,editTextAge;
     private Button buttonInscription;
-
+    private Socket socket= null;
+    private OutputStream outputStream=null;
+    private InputStream inputStream =null;
 
 
     @Override
@@ -60,44 +62,68 @@ public class SignUpActivity extends AppCompatActivity  {
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket("10.0.2.15", 8080);
+                    socket = new Socket("10.0.2.15", 8080);
                     System.out.println("connected");
-                    OutputStream outputStream = socket.getOutputStream();
-                    String data ="Inscription "+ user.toString();
+                    String data = user.toString();
+                    sendMessage(socket ,data);
 
-                    outputStream.write(data.getBytes());
+
 
                     System.out.println("data sended");
 
-                    InputStream inputStream = socket.getInputStream();
 
-                    // lire les données envoyées par le client
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = inputStream.read(buffer);
-                    System.out.println(bytesRead);
-                    String response = new String(buffer, 0, bytesRead);
-
-
+                    String response =receiveMessage(socket);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (response.equals("OK")) {
+                            if (response.equals("Ajout Validé")) {
                                 navigateToActivity(PatientActivity.class);
                             } else {
-                                Toast.makeText(SignUpActivity.this, "Error: Invalid email or password", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpActivity.this, "Impossible de créer le compte", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
-                    inputStream.close();
-                    outputStream.close();
-                    socket.close();
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+    private void sendMessage(Socket socket,String data ){
+
+        try {
+            outputStream = socket.getOutputStream();
+            outputStream.write(data.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    private String receiveMessage (Socket socket){
+
+        try {
+            inputStream = socket.getInputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead = inputStream.read(buffer);
+            System.out.println(bytesRead);
+            String response = new String(buffer, 0, bytesRead);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void close (){
+        try {
+            inputStream.close();
+            outputStream.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

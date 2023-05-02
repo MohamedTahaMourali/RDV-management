@@ -82,7 +82,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (response.equals("OK")) {
+                            if (response.equals("utiliateur existant")) {
                                 navigateToActivity(PatientActivity.class);
                             } else {
                                 Toast.makeText(LogInActivity.this, "Error: Invalid email or password", Toast.LENGTH_SHORT).show();
