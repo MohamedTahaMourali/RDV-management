@@ -6,6 +6,13 @@
     android:padding="24dp"
     android:background="@drawable/background1"
     android:gravity="center_vertical">
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="-180dp"
+        android:layout_gravity="center"
+        android:src="@drawable/robot"
+        ></ImageView>
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,6 +24,7 @@
 
     <EditText
         android:id="@+id/editTextEmail"
+        android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -29,6 +37,7 @@
 
     <EditText
         android:id="@+id/editTextPassword"
+        android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
     android:background="@drawable/background1"
-    android:gravity="center_vertical">
+    android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,17 +16,26 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/robot"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp" />
+
     <EditText
         android:id="@+id/edit_text_nom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="-24dp"
         android:backgroundTint="@color/black"
         android:hint="@string/first_name"
         android:maxLines="1"
         android:padding="12dp"
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
+
 
     <EditText
         android:id="@+id/edit_text_prenom"
@@ -59,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/black"
+        android:inputType="textPassword"
         android:hint="@string/mdp"
         android:maxLines="1"
         android:padding="12dp"
@@ -88,6 +97,6 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
-
-
 </LinearLayout>
+
+
