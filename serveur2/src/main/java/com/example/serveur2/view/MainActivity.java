@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     String validerRDV(String email, String tel, String desc, String date, String temps){
         int patientID = patientDatabase.getId(email);
         System.out.println(patientID);
-        boolean verifRdv = rdvDataBase.vetifRDV(patientID,tel,desc,date,temps);
+        boolean verifRdv = rdvDataBase.verifyRdv(patientID,tel,desc,date,temps);
         if (verifRdv){
             return "Rendez-vous Validé";
         }

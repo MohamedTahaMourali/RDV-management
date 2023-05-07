@@ -71,6 +71,7 @@ public class PatientActivity extends AppCompatActivity {
                     Intent it = getIntent();
                     String emailUser = it.getStringExtra("email");
                     String data = "Rendez-vous : "+emailUser+" "+ rdv.toString();
+                    System.out.println(data);
                     sendMessage(socket ,data);
 
 
@@ -79,10 +80,11 @@ public class PatientActivity extends AppCompatActivity {
 
 
                     String response =receiveMessage(socket);
+                    System.out.println(response);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (response.equals("Rendez-vous Validé ")) {
+                            if (response.equals("Rendez-vous Validé")) {
                                 navigateToActivity(RDVAcceptActivity.class);
                             } else {
                                 navigateToActivity(RDVRefusActivity.class);

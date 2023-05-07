@@ -77,7 +77,7 @@ public class SignUpActivity extends AppCompatActivity  {
                         @Override
                         public void run() {
                             if (response.equals("Ajout Validé")) {
-                                navigateToActivity(PatientActivity.class);
+                                navigateToActivity(LogInActivity.class);
                             } else {
                                 Toast.makeText(SignUpActivity.this, "Impossible de créer le compte", Toast.LENGTH_SHORT).show();
                             }

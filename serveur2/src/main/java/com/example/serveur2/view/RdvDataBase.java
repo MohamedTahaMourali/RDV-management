@@ -65,11 +65,13 @@ public class RdvDataBase extends SQLiteOpenHelper {
         values.put(COLUMN_DESCRIPTION, desc);
         values.put(COLUMN_TEL, tel);
         long newRowId = rdvDB.insert(TABLE_NAME, null, values);
+        System.out.println(newRowId);
         System.out.println(newRowId != -1);
         return newRowId != -1;
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public boolean vetifRDV(int patientId, String tel, String desc, String date, String temps) {
+
+    public boolean verifyRdv(int patientId, String tel, String desc, String date, String temps) {
         SQLiteDatabase rdvDB = getReadableDatabase();
         String[] projection = {
                 COLUMN_DATE,
@@ -78,45 +80,74 @@ public class RdvDataBase extends SQLiteOpenHelper {
         String sortOrder =
                 COLUMN_DATE + " DESC, " + COLUMN_TEMPS + " DESC";
 
+        // Requête pour récupérer la date minimale dans la table
+        Cursor minDateCursor = rdvDB.query(
+                TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder,
+                "1"
+        );
+        LocalDateTime minRdvDateTime = null;
+        if (minDateCursor.moveToNext()) {
+            String minDate = minDateCursor.getString(minDateCursor.getColumnIndexOrThrow(COLUMN_DATE));
+            String minTime = minDateCursor.getString(minDateCursor.getColumnIndexOrThrow(COLUMN_TEMPS));
+            minRdvDateTime = LocalDateTime.parse(minDate + "T" + minTime);
+            System.out.println("La date minimale dans la table : "+minRdvDateTime);
+        }
+        minDateCursor.close();
+
         Cursor cursor = rdvDB.query(
-                TABLE_NAME, // La table à interroger
-                projection, // Les colonnes à retourner
-                null, // Les colonnes WHERE clause
-                null, // Les valeurs WHERE clause
-                null, // GROUP BY clause
-                null, // HAVING clause
-                sortOrder // ORDER BY clause
+                TABLE_NAME,
+                projection,
+                COLUMN_DATE + " = ?",
+                new String[]{date},
+                null,
+                null,
+                sortOrder
         );
 
         LocalDateTime lastRdvDateTime = null;
-        if (cursor.moveToNext()) {
-            String lastDate = cursor.getString(
-                    cursor.getColumnIndexOrThrow(COLUMN_DATE));
-            String lastTime = cursor.getString(
-                    cursor.getColumnIndexOrThrow(COLUMN_TEMPS));
+        if (cursor.moveToLast()) {
+            String lastDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE));
+            String lastTime = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TEMPS));
             lastRdvDateTime = LocalDateTime.parse(lastDate + "T" + lastTime);
+            System.out.println("La dernière date pour cette journée : "+lastRdvDateTime);
         }
         cursor.close();
 
         LocalDateTime newRdvDateTime = LocalDateTime.parse(date + "T" + temps);
 
         boolean isValid = false;
-        if (lastRdvDateTime == null) {
+        if (minRdvDateTime != null && newRdvDateTime.isBefore(minRdvDateTime)) {
+            System.out.println("La date est inférieure à la date minimale : "+isValid);
+        } else if (lastRdvDateTime == null && newRdvDateTime.isAfter(LocalDateTime.parse(date + "T08:00:00"))) {
             isValid = true;
-        } else {
-            LocalDateTime minDate = lastRdvDateTime.plusMinutes(15);
-            isValid = newRdvDateTime.isAfter(minDate) || newRdvDateTime.isEqual(minDate);
+        } else if (lastRdvDateTime != null && newRdvDateTime.isAfter(lastRdvDateTime.plusMinutes(15))) {
+            isValid = true;
+        } else if (lastRdvDateTime == null) {
+            isValid = true;
         }
 
         if (isValid) {
-            System.out.println(isValid);
+            System.out.println("La date est valide : "+isValid);
+            System.out.println("Ajout...");
             return addRdv(patientId, tel, desc, date, temps);
         } else {
+            System.out.println("La date n'est pas valide");
             return false;
         }
     }
 
+    public void clearRdvTable() {
+        SQLiteDatabase rdvDB = getWritableDatabase();
+        rdvDB.delete(TABLE_NAME, null, null);
+    }
 
 }
+
 
 
