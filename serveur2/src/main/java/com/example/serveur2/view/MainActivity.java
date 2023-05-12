@@ -2,7 +2,6 @@ package com.example.serveur2.view;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.EditText;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,10 +19,10 @@ public class MainActivity extends AppCompatActivity {
     private ServerSocket serverSocket;
     private Socket clientSocket;
 
-    private DatabaseHelper patientDatabase;
+    private PatientDB patientDatabase;
     private int serverPort = 8080;
     private InputStream inputStream = null;
-    private OutputStream outputStream =null ;
+    private OutputStream outputStream = null;
     private RdvDataBase rdvDataBase;
 
     @Override
@@ -31,8 +30,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        patientDatabase = new DatabaseHelper(this);
+        patientDatabase = new PatientDB(this);
         rdvDataBase = new RdvDataBase(this);
+
+
         // Création d'un thread pour le serveur
         Thread serverThread = new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -52,14 +53,16 @@ public class MainActivity extends AppCompatActivity {
 
                         //séparation du email et mot de passe
                         String[] messageRecu = message.split(" ");
+                        System.out.println(messageRecu);
 
                         String reponse = "";
                         if (messageRecu.length == 2) {
                             reponse = verifUser(messageRecu[0], messageRecu[1]);
                         } else if (message.startsWith("Rendez-vous : ")) {
+
                             reponse = validerRDV(messageRecu[2], messageRecu[3], messageRecu[4], messageRecu[5], messageRecu[6]);
                         } else
-                            reponse = addUser(messageRecu[2], messageRecu[3], messageRecu[4], messageRecu[0], messageRecu[1]);
+                            reponse = addUser(messageRecu[0], messageRecu[1], messageRecu[2], messageRecu[3], messageRecu[4]);
 
                     sendMessage(clientSocket, reponse);
                         // Vérifier l'existence de l'utilisateur dans la base de données
@@ -81,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     String validerRDV(String email, String tel, String desc, String date, String temps){
         int patientID = patientDatabase.getId(email);
-        System.out.println(patientID);
         boolean verifRdv = rdvDataBase.verifyRdv(patientID,tel,desc,date,temps);
         if (verifRdv){
             return "Rendez-vous Validé";
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     }
     String verifUser(String email,String password){
         boolean userExists = patientDatabase.checkUser(email, password);
+
 
         // Initialiser le flux d'écriture
         // Envoyer une réponse au client
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     String addUser(String nom,String prenom,String age , String email, String password){
-        if(patientDatabase.addUser(nom,prenom,age,email,password))
+        if(patientDatabase.addUser(nom,prenom,email,password,age))
             return "Ajout Validé";
         return "ajout invalide";
 
@@ -136,4 +139,5 @@ public class MainActivity extends AppCompatActivity {
             clientSocket.close();
         }
     }
+
 

@@ -66,6 +66,7 @@ public class SignUpActivity extends AppCompatActivity  {
                     System.out.println("connected");
                     String data = user.toString();
                     sendMessage(socket ,data);
+                    System.out.println(data);
 
 
 

@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.security.AccessControlContext;
-
 //import com.example.consutationmanagement.model.Patient;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class PatientDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "patient.db";
     private static final int DATABASE_VERSION = 4;
     private static final  String TABLE_NAME = "Patient"  ;
@@ -30,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_AGE + " TEXT)";
 
 
-    public DatabaseHelper(Context context) {
+    public PatientDB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -83,6 +81,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return -1;
         }
     }
+    public void clearDatabase() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, null, null);
+        db.close();
+    }
+
+
+
 
 }
 

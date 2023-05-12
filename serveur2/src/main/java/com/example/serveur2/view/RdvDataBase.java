@@ -141,11 +141,12 @@ public class RdvDataBase extends SQLiteOpenHelper {
             return false;
         }
     }
-
     public void clearRdvTable() {
         SQLiteDatabase rdvDB = getWritableDatabase();
         rdvDB.delete(TABLE_NAME, null, null);
     }
+
+
 
 }
 
